@@ -1,0 +1,158 @@
+[
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "webdriver",
+        "importPath": "selenium",
+        "description": "selenium",
+        "isExtraImport": true,
+        "detail": "selenium",
+        "documentation": {}
+    },
+    {
+        "label": "Service",
+        "importPath": "selenium.webdriver.chrome.service",
+        "description": "selenium.webdriver.chrome.service",
+        "isExtraImport": true,
+        "detail": "selenium.webdriver.chrome.service",
+        "documentation": {}
+    },
+    {
+        "label": "DesiredCapabilities",
+        "importPath": "selenium.webdriver.common.desired_capabilities",
+        "description": "selenium.webdriver.common.desired_capabilities",
+        "isExtraImport": true,
+        "detail": "selenium.webdriver.common.desired_capabilities",
+        "documentation": {}
+    },
+    {
+        "label": "Options",
+        "importPath": "selenium.webdriver.chrome.options",
+        "description": "selenium.webdriver.chrome.options",
+        "isExtraImport": true,
+        "detail": "selenium.webdriver.chrome.options",
+        "documentation": {}
+    },
+    {
+        "label": "tkinter",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "messagebox",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "filedialog",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "extract_video_url",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def extract_video_url(logs):\n    \"\"\"\n    Extrai o link direto do vídeo a partir dos logs de rede.\n    Procura por links contendo .m3u8 ou .mp4.\n    \"\"\"\n    for log in logs:\n        message = json.loads(log['message'])\n        try:\n            url = message['message']['params']['request']['url']\n            if '.m3u8' in url or '.mp4' in url:",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "download_video",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def download_video(video_url, output_file):\n    \"\"\"\n    Baixa o vídeo usando ffmpeg.\n    \"\"\"\n    print(f\"Baixando vídeo de: {video_url}\")\n    command = f'ffmpeg -i \"{video_url}\" -c copy \"{output_file}\"'\n    os.system(command)\n    print(f\"Download concluído. Arquivo salvo como {output_file}\")\ndef main(video_page_url, output_file):\n    # Configuração do navegador para capturar logs de rede",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def main(video_page_url, output_file):\n    # Configuração do navegador para capturar logs de rede\n    caps = DesiredCapabilities.CHROME\n    caps['goog:loggingPrefs'] = {'performance': 'ALL'}\n    chrome_options = Options()\n    chrome_options.add_argument('--headless')  # Executa o Chrome em modo headless\n    service = Service('C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe')  # Atualize com o caminho do chromedriver\n    chrome_options.add_experimental_option(\"perfLoggingPrefs\", {\"enableNetwork\": True})\n    driver = webdriver.Chrome(service=service, options=chrome_options, desired_capabilities=caps)\n    try:",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "start_download",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def start_download():\n    video_page_url = url_entry.get()\n    if not video_page_url:\n        messagebox.showerror(\"Erro\", \"Por favor, insira a URL do vídeo.\")\n        return\n    output_file = filedialog.asksaveasfilename(defaultextension=\".mp4\", filetypes=[(\"MP4 files\", \"*.mp4\"), (\"All files\", \"*.*\")])\n    if not output_file:\n        return\n    main(video_page_url, output_file)\n# Configuração da interface gráfica",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "root",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "root = tk.Tk()\nroot.title(\"Weverse Downloader\")\ntk.Label(root, text=\"URL do vídeo:\").pack(pady=5)\nurl_entry = tk.Entry(root, width=50)\nurl_entry.pack(pady=5)\ndownload_button = tk.Button(root, text=\"Baixar Vídeo\", command=start_download)\ndownload_button.pack(pady=20)\nroot.mainloop()",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "url_entry",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "url_entry = tk.Entry(root, width=50)\nurl_entry.pack(pady=5)\ndownload_button = tk.Button(root, text=\"Baixar Vídeo\", command=start_download)\ndownload_button.pack(pady=20)\nroot.mainloop()",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "download_button",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "download_button = tk.Button(root, text=\"Baixar Vídeo\", command=start_download)\ndownload_button.pack(pady=20)\nroot.mainloop()",
+        "detail": "downloader",
+        "documentation": {}
+    }
+]
