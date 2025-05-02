@@ -27,44 +27,21 @@
         "documentation": {}
     },
     {
-        "label": "sys",
+        "label": "threading",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "sys",
-        "description": "sys",
-        "detail": "sys",
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
         "documentation": {}
     },
     {
-        "label": "webdriver",
-        "importPath": "selenium",
-        "description": "selenium",
+        "label": "subprocess",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "selenium",
-        "documentation": {}
-    },
-    {
-        "label": "Service",
-        "importPath": "selenium.webdriver.chrome.service",
-        "description": "selenium.webdriver.chrome.service",
-        "isExtraImport": true,
-        "detail": "selenium.webdriver.chrome.service",
-        "documentation": {}
-    },
-    {
-        "label": "DesiredCapabilities",
-        "importPath": "selenium.webdriver.common.desired_capabilities",
-        "description": "selenium.webdriver.common.desired_capabilities",
-        "isExtraImport": true,
-        "detail": "selenium.webdriver.common.desired_capabilities",
-        "documentation": {}
-    },
-    {
-        "label": "Options",
-        "importPath": "selenium.webdriver.chrome.options",
-        "description": "selenium.webdriver.chrome.options",
-        "isExtraImport": true,
-        "detail": "selenium.webdriver.chrome.options",
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "detail": "subprocess",
         "documentation": {}
     },
     {
@@ -93,11 +70,59 @@
         "documentation": {}
     },
     {
+        "label": "webdriver",
+        "importPath": "selenium",
+        "description": "selenium",
+        "isExtraImport": true,
+        "detail": "selenium",
+        "documentation": {}
+    },
+    {
+        "label": "Service",
+        "importPath": "selenium.webdriver.chrome.service",
+        "description": "selenium.webdriver.chrome.service",
+        "isExtraImport": true,
+        "detail": "selenium.webdriver.chrome.service",
+        "documentation": {}
+    },
+    {
+        "label": "Options",
+        "importPath": "selenium.webdriver.chrome.options",
+        "description": "selenium.webdriver.chrome.options",
+        "isExtraImport": true,
+        "detail": "selenium.webdriver.chrome.options",
+        "documentation": {}
+    },
+    {
+        "label": "By",
+        "importPath": "selenium.webdriver.common.by",
+        "description": "selenium.webdriver.common.by",
+        "isExtraImport": true,
+        "detail": "selenium.webdriver.common.by",
+        "documentation": {}
+    },
+    {
+        "label": "WebDriverWait",
+        "importPath": "selenium.webdriver.support.ui",
+        "description": "selenium.webdriver.support.ui",
+        "isExtraImport": true,
+        "detail": "selenium.webdriver.support.ui",
+        "documentation": {}
+    },
+    {
+        "label": "expected_conditions",
+        "importPath": "selenium.webdriver.support",
+        "description": "selenium.webdriver.support",
+        "isExtraImport": true,
+        "detail": "selenium.webdriver.support",
+        "documentation": {}
+    },
+    {
         "label": "extract_video_url",
         "kind": 2,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "def extract_video_url(logs):\n    \"\"\"\n    Extrai o link direto do vídeo a partir dos logs de rede.\n    Procura por links contendo .m3u8 ou .mp4.\n    \"\"\"\n    for log in logs:\n        message = json.loads(log['message'])\n        try:\n            url = message['message']['params']['request']['url']\n            if '.m3u8' in url or '.mp4' in url:",
+        "peekOfCode": "def extract_video_url(logs):\n    \"\"\"\n    Extracts the direct video URL from network logs.\n    Looks for URLs containing .m3u8 or .mp4.\n    \"\"\"\n    for log in logs:\n        try:\n            message = json.loads(log['message'])\n            url = message.get('message', {}).get('params', {}).get('request', {}).get('url', '')\n            if url and ('.m3u8' in url or '.mp4' in url):",
         "detail": "downloader",
         "documentation": {}
     },
@@ -106,7 +131,7 @@
         "kind": 2,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "def download_video(video_url, output_file):\n    \"\"\"\n    Baixa o vídeo usando ffmpeg.\n    \"\"\"\n    print(f\"Baixando vídeo de: {video_url}\")\n    command = f'ffmpeg -i \"{video_url}\" -c copy \"{output_file}\"'\n    os.system(command)\n    print(f\"Download concluído. Arquivo salvo como {output_file}\")\ndef main(video_page_url, output_file):\n    # Configuração do navegador para capturar logs de rede",
+        "peekOfCode": "def download_video(video_url, output_file):\n    \"\"\"\n    Downloads the video using ffmpeg.\n    \"\"\"\n    print(f\"Downloading video from: {video_url}\")\n    command = f'ffmpeg -i \"{video_url}\" -c copy \"{output_file}\"'\n    subprocess.run(command, shell=True, check=True)\n    print(f\"Download completed. File saved as {output_file}\")\ndef main(video_page_url):\n    # Configure the browser to capture network logs",
         "detail": "downloader",
         "documentation": {}
     },
@@ -115,7 +140,7 @@
         "kind": 2,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "def main(video_page_url, output_file):\n    # Configuração do navegador para capturar logs de rede\n    caps = DesiredCapabilities.CHROME\n    caps['goog:loggingPrefs'] = {'performance': 'ALL'}\n    chrome_options = Options()\n    chrome_options.add_argument('--headless')  # Executa o Chrome em modo headless\n    service = Service('C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe')  # Atualize com o caminho do chromedriver\n    chrome_options.add_experimental_option(\"perfLoggingPrefs\", {\"enableNetwork\": True})\n    driver = webdriver.Chrome(service=service, options=chrome_options, desired_capabilities=caps)\n    try:",
+        "peekOfCode": "def main(video_page_url):\n    # Configure the browser to capture network logs\n    chrome_options = Options()\n    chrome_options.add_argument('--headless')  # Runs Chrome in headless mode\n    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})\n    # Update with the correct chromedriver path\n    service = Service('C:\\\\path\\\\to\\\\chromedriver.exe')\n    driver = webdriver.Chrome(service=service, options=chrome_options)\n    try:\n        # Navigate to the video page",
         "detail": "downloader",
         "documentation": {}
     },
@@ -124,7 +149,7 @@
         "kind": 2,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "def start_download():\n    video_page_url = url_entry.get()\n    if not video_page_url:\n        messagebox.showerror(\"Erro\", \"Por favor, insira a URL do vídeo.\")\n        return\n    output_file = filedialog.asksaveasfilename(defaultextension=\".mp4\", filetypes=[(\"MP4 files\", \"*.mp4\"), (\"All files\", \"*.*\")])\n    if not output_file:\n        return\n    main(video_page_url, output_file)\n# Configuração da interface gráfica",
+        "peekOfCode": "def start_download():\n    video_page_url = url_entry.get()\n    if not video_page_url:\n        messagebox.showerror(\"Error\", \"Please enter the video URL.\")\n        return\n    # Run main in a separate thread to avoid UI freeze\n    threading.Thread(target=main, args=(video_page_url,), daemon=True).start()\n# Configuration of the GUI\nroot = tk.Tk()\nroot.title(\"Weverse Video Downloader\")",
         "detail": "downloader",
         "documentation": {}
     },
@@ -133,7 +158,34 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "root = tk.Tk()\nroot.title(\"Weverse Downloader\")\ntk.Label(root, text=\"URL do vídeo:\").pack(pady=5)\nurl_entry = tk.Entry(root, width=50)\nurl_entry.pack(pady=5)\ndownload_button = tk.Button(root, text=\"Baixar Vídeo\", command=start_download)\ndownload_button.pack(pady=20)\nroot.mainloop()",
+        "peekOfCode": "root = tk.Tk()\nroot.title(\"Weverse Video Downloader\")\nroot.geometry(\"500x300\")  # Set the size of the window\nroot.config(bg=\"#f0f0f0\")  # Set a light background color\n# Create a frame for better organization\nframe = tk.Frame(root, bg=\"#f0f0f0\")\nframe.pack(pady=20)\n# Add title label with styling\ntitle_label = tk.Label(frame, text=\"Weverse Video Downloader\", font=(\"Helvetica\", 16, \"bold\"), fg=\"#333\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10)",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "frame",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "frame = tk.Frame(root, bg=\"#f0f0f0\")\nframe.pack(pady=20)\n# Add title label with styling\ntitle_label = tk.Label(frame, text=\"Weverse Video Downloader\", font=(\"Helvetica\", 16, \"bold\"), fg=\"#333\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10)\n# Label and entry for the URL\nurl_label = tk.Label(frame, text=\"Video URL:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=10, sticky=\"e\")\nurl_entry = tk.Entry(frame, width=40, font=(\"Helvetica\", 12), borderwidth=2, relief=\"solid\")\nurl_entry.grid(row=1, column=1, padx=10, pady=10)",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "title_label",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "title_label = tk.Label(frame, text=\"Weverse Video Downloader\", font=(\"Helvetica\", 16, \"bold\"), fg=\"#333\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10)\n# Label and entry for the URL\nurl_label = tk.Label(frame, text=\"Video URL:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=10, sticky=\"e\")\nurl_entry = tk.Entry(frame, width=40, font=(\"Helvetica\", 12), borderwidth=2, relief=\"solid\")\nurl_entry.grid(row=1, column=1, padx=10, pady=10)\n# Button to start download\ndownload_button = tk.Button(frame, text=\"Download Video\", command=start_download, font=(\"Helvetica\", 12), bg=\"#4CAF50\", fg=\"white\", relief=\"flat\", width=20)\ndownload_button.grid(row=2, column=0, columnspan=2, pady=20)",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "url_label",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "url_label = tk.Label(frame, text=\"Video URL:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=10, sticky=\"e\")\nurl_entry = tk.Entry(frame, width=40, font=(\"Helvetica\", 12), borderwidth=2, relief=\"solid\")\nurl_entry.grid(row=1, column=1, padx=10, pady=10)\n# Button to start download\ndownload_button = tk.Button(frame, text=\"Download Video\", command=start_download, font=(\"Helvetica\", 12), bg=\"#4CAF50\", fg=\"white\", relief=\"flat\", width=20)\ndownload_button.grid(row=2, column=0, columnspan=2, pady=20)\n# Add padding for the overall window\nroot.grid_rowconfigure(0, weight=1)\nroot.grid_rowconfigure(1, weight=1)",
         "detail": "downloader",
         "documentation": {}
     },
@@ -142,7 +194,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "url_entry = tk.Entry(root, width=50)\nurl_entry.pack(pady=5)\ndownload_button = tk.Button(root, text=\"Baixar Vídeo\", command=start_download)\ndownload_button.pack(pady=20)\nroot.mainloop()",
+        "peekOfCode": "url_entry = tk.Entry(frame, width=40, font=(\"Helvetica\", 12), borderwidth=2, relief=\"solid\")\nurl_entry.grid(row=1, column=1, padx=10, pady=10)\n# Button to start download\ndownload_button = tk.Button(frame, text=\"Download Video\", command=start_download, font=(\"Helvetica\", 12), bg=\"#4CAF50\", fg=\"white\", relief=\"flat\", width=20)\ndownload_button.grid(row=2, column=0, columnspan=2, pady=20)\n# Add padding for the overall window\nroot.grid_rowconfigure(0, weight=1)\nroot.grid_rowconfigure(1, weight=1)\nroot.mainloop()",
         "detail": "downloader",
         "documentation": {}
     },
@@ -151,7 +203,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "download_button = tk.Button(root, text=\"Baixar Vídeo\", command=start_download)\ndownload_button.pack(pady=20)\nroot.mainloop()",
+        "peekOfCode": "download_button = tk.Button(frame, text=\"Download Video\", command=start_download, font=(\"Helvetica\", 12), bg=\"#4CAF50\", fg=\"white\", relief=\"flat\", width=20)\ndownload_button.grid(row=2, column=0, columnspan=2, pady=20)\n# Add padding for the overall window\nroot.grid_rowconfigure(0, weight=1)\nroot.grid_rowconfigure(1, weight=1)\nroot.mainloop()",
         "detail": "downloader",
         "documentation": {}
     }
