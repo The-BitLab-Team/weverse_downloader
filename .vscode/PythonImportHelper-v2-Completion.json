@@ -70,6 +70,14 @@
         "documentation": {}
     },
     {
+        "label": "simpledialog",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
         "label": "webdriver",
         "importPath": "selenium",
         "description": "selenium",
@@ -118,11 +126,80 @@
         "documentation": {}
     },
     {
-        "label": "extract_video_url",
+        "label": "WebDriverException",
+        "importPath": "selenium.common.exceptions",
+        "description": "selenium.common.exceptions",
+        "isExtraImport": true,
+        "detail": "selenium.common.exceptions",
+        "documentation": {}
+    },
+    {
+        "label": "TimeoutException",
+        "importPath": "selenium.common.exceptions",
+        "description": "selenium.common.exceptions",
+        "isExtraImport": true,
+        "detail": "selenium.common.exceptions",
+        "documentation": {}
+    },
+    {
+        "label": "ChromeDriverManager",
+        "importPath": "webdriver_manager.chrome",
+        "description": "webdriver_manager.chrome",
+        "isExtraImport": true,
+        "detail": "webdriver_manager.chrome",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "extract_video_url_from_live_logs",
         "kind": 2,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "def extract_video_url(logs):\n    \"\"\"\n    Extracts the direct video URL from network logs.\n    Looks for URLs containing .m3u8 or .mp4.\n    \"\"\"\n    for log in logs:\n        try:\n            message = json.loads(log['message'])\n            url = message.get('message', {}).get('params', {}).get('request', {}).get('url', '')\n            if url and ('.m3u8' in url or '.mp4' in url):",
+        "peekOfCode": "def extract_video_url_from_live_logs(logs):\n    \"\"\"\n    Extracts a direct video URL (m3u8/mp4) from network logs, typically for live streams.\n    \"\"\"\n    for log in logs:\n        try:\n            message = json.loads(log['message'])\n            url = message.get('message', {}).get('params', {}).get('request', {}).get('url', '')\n            if url and ('.m3u8' in url or '.mp4' in url):\n                if 'weverse' in url and ('video' in url or 'stream' in url):",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "save_cookies",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def save_cookies(driver, status_callback):\n    \"\"\"\n    Saves browser cookies to a JSON file.\n    Expects the driver to be in a logged-in state on Weverse.\n    \"\"\"\n    try:\n        # Navegar para um domínio base do Weverse para garantir que os cookies corretos sejam recuperados\n        # (se o driver não estiver em uma página do Weverse)\n        driver.get(\"https://weverse.io/home\") # Ou outra URL base do Weverse\n        time.sleep(2) # Pequena espera para carregar a página",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "load_cookies",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def load_cookies(driver, status_callback):\n    \"\"\"\n    Loads cookies from a JSON file and adds them to the browser session.\n    Returns True if cookies were loaded successfully and appear to be valid, False otherwise.\n    \"\"\"\n    if not os.path.exists(COOKIES_FILE):\n        status_callback(\"Arquivo de cookies não encontrado.\")\n        print(\"Arquivo de cookies não encontrado.\")\n        return False\n    try:",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "perform_weverse_login_manual",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def perform_weverse_login_manual(driver, status_callback):\n    \"\"\"\n    Instrui o usuário a fazer login manualmente na janela do navegador aberta.\n    Retorna True se o login for detectado como bem-sucedido, False caso contrário.\n    \"\"\"\n    status_callback(\"Por favor, faça login no Weverse na janela do navegador que abriu.\")\n    print(\"Aguardando login manual na janela do navegador...\")\n    login_url = \"https://weverse.io/login\" \n    driver.get(login_url)\n    # Abre a janela do navegador para o usuário fazer login manualmente",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "extract_video_url_for_vods",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def extract_video_url_for_vods(driver, status_callback):\n    \"\"\"\n    Tenta extrair a URL de um VOD (Vídeo On Demand) do Weverse.\n    Prioriza a busca em elementos DOM e depois em logs de rede.\n    \"\"\"\n    status_callback(\"Tentando encontrar URL do VOD...\")\n    print(\"Tentando encontrar URL do VOD...\")\n    video_url = None\n    # --- ESTRATÉGIA 1: Tentar encontrar URLs em tags de vídeo ou scripts ---\n    try:",
         "detail": "downloader",
         "documentation": {}
     },
@@ -131,7 +208,7 @@
         "kind": 2,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "def download_video(video_url, output_file):\n    \"\"\"\n    Downloads the video using ffmpeg.\n    \"\"\"\n    print(f\"Downloading video from: {video_url}\")\n    command = f'ffmpeg -i \"{video_url}\" -c copy \"{output_file}\"'\n    subprocess.run(command, shell=True, check=True)\n    print(f\"Download completed. File saved as {output_file}\")\ndef main(video_page_url):\n    # Configure the browser to capture network logs",
+        "peekOfCode": "def download_video(video_url, output_file, status_callback):\n    \"\"\"\n    Downloads the video using ffmpeg.\n    Provides basic status updates via the status_callback.\n    \"\"\"\n    status_callback(\"Iniciando download do vídeo...\")\n    print(f\"Downloading video from: {video_url}\")\n    command = f'ffmpeg -i \"{video_url}\" -c copy \"{output_file}\" -stats -loglevel warning -hide_banner -y'\n    try:\n        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)",
         "detail": "downloader",
         "documentation": {}
     },
@@ -140,16 +217,52 @@
         "kind": 2,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "def main(video_page_url):\n    # Configure the browser to capture network logs\n    chrome_options = Options()\n    chrome_options.add_argument('--headless')  # Runs Chrome in headless mode\n    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})\n    # Update with the correct chromedriver path\n    service = Service('C:\\\\path\\\\to\\\\chromedriver.exe')\n    driver = webdriver.Chrome(service=service, options=chrome_options)\n    try:\n        # Navigate to the video page",
+        "peekOfCode": "def main(video_page_url, output_file, status_callback):\n    \"\"\"\n    Main function to orchestrate the video extraction and download for VODs.\n    \"\"\"\n    status_callback(\"Iniciando processo de download do VOD...\")\n    chrome_options = Options()\n    chrome_options.add_argument('--log-level=3') \n    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})\n    driver = None \n    try:",
         "detail": "downloader",
         "documentation": {}
     },
     {
-        "label": "start_download",
+        "label": "update_status_label",
         "kind": 2,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "def start_download():\n    video_page_url = url_entry.get()\n    if not video_page_url:\n        messagebox.showerror(\"Error\", \"Please enter the video URL.\")\n        return\n    # Run main in a separate thread to avoid UI freeze\n    threading.Thread(target=main, args=(video_page_url,), daemon=True).start()\n# Configuration of the GUI\nroot = tk.Tk()\nroot.title(\"Weverse Video Downloader\")",
+        "peekOfCode": "def update_status_label(message):\n    \"\"\"Updates the status label in the GUI. Ensures thread safety.\"\"\"\n    root.after(0, lambda: status_label.config(text=message))\ndef get_title_from_url_helper(url, status_callback):\n    \"\"\"\n    Helper function to fetch the page title in a headless browser.\n    \"\"\"\n    try:\n        status_callback(\"Buscando título da página...\")\n        chrome_options = Options()",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "get_title_from_url_helper",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def get_title_from_url_helper(url, status_callback):\n    \"\"\"\n    Helper function to fetch the page title in a headless browser.\n    \"\"\"\n    try:\n        status_callback(\"Buscando título da página...\")\n        chrome_options = Options()\n        chrome_options.add_argument('--headless')\n        chrome_options.add_argument('--log-level=3')\n        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "start_download_thread",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def start_download_thread():\n    \"\"\"\n    Handles the start download button click, validates input,\n    and starts the download process in a separate thread.\n    \"\"\"\n    video_page_url = url_entry.get().strip()\n    if not video_page_url:\n        messagebox.showerror(\"Erro\", \"Por favor, insira a URL do vídeo.\")\n        return\n    if \"weverse.io\" not in video_page_url and \"weverse.com\" not in video_page_url:",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "on_manual_login_button",
+        "kind": 2,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "def on_manual_login_button():\n    \"\"\"\n    Handles the 'Login Manual' button click.\n    Opens a browser for manual login and then saves cookies.\n    \"\"\"\n    # Abre um driver temporário para o usuário fazer login manualmente\n    temp_driver = None\n    try:\n        chrome_options = Options()\n        # Não use headless aqui, o usuário precisa interagir",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "COOKIES_FILE",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "COOKIES_FILE = \"weverse_cookies.json\" # Nome do arquivo para salvar os cookies\n# --- Funções Core ---\n# Mantido para referência, mas a lógica para VODs será focada em extract_video_url_for_vods\ndef extract_video_url_from_live_logs(logs):\n    \"\"\"\n    Extracts a direct video URL (m3u8/mp4) from network logs, typically for live streams.\n    \"\"\"\n    for log in logs:\n        try:\n            message = json.loads(log['message'])",
         "detail": "downloader",
         "documentation": {}
     },
@@ -158,7 +271,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "root = tk.Tk()\nroot.title(\"Weverse Video Downloader\")\nroot.geometry(\"500x300\")  # Set the size of the window\nroot.config(bg=\"#f0f0f0\")  # Set a light background color\n# Create a frame for better organization\nframe = tk.Frame(root, bg=\"#f0f0f0\")\nframe.pack(pady=20)\n# Add title label with styling\ntitle_label = tk.Label(frame, text=\"Weverse Video Downloader\", font=(\"Helvetica\", 16, \"bold\"), fg=\"#333\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10)",
+        "peekOfCode": "root = tk.Tk()\nroot.title(\"Weverse VOD Downloader\")\nroot.geometry(\"550x450\") # Aumenta a altura da janela\nroot.resizable(False, False)\nroot.config(bg=\"#f0f0f0\")\nframe = tk.Frame(root, bg=\"#f0f0f0\", padx=20, pady=20)\nframe.pack(pady=10, fill=tk.BOTH, expand=True) # Reduz o pady superior para mais espaço\ntitle_label = tk.Label(frame, text=\"Weverse VOD Downloader\", font=(\"Helvetica\", 18, \"bold\"), fg=\"#333\", bg=\"#f0f0f0\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10) # Reduz o pady para o título\nurl_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")",
         "detail": "downloader",
         "documentation": {}
     },
@@ -167,7 +280,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "frame = tk.Frame(root, bg=\"#f0f0f0\")\nframe.pack(pady=20)\n# Add title label with styling\ntitle_label = tk.Label(frame, text=\"Weverse Video Downloader\", font=(\"Helvetica\", 16, \"bold\"), fg=\"#333\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10)\n# Label and entry for the URL\nurl_label = tk.Label(frame, text=\"Video URL:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=10, sticky=\"e\")\nurl_entry = tk.Entry(frame, width=40, font=(\"Helvetica\", 12), borderwidth=2, relief=\"solid\")\nurl_entry.grid(row=1, column=1, padx=10, pady=10)",
+        "peekOfCode": "frame = tk.Frame(root, bg=\"#f0f0f0\", padx=20, pady=20)\nframe.pack(pady=10, fill=tk.BOTH, expand=True) # Reduz o pady superior para mais espaço\ntitle_label = tk.Label(frame, text=\"Weverse VOD Downloader\", font=(\"Helvetica\", 18, \"bold\"), fg=\"#333\", bg=\"#f0f0f0\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10) # Reduz o pady para o título\nurl_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botões de Login/Cookies",
         "detail": "downloader",
         "documentation": {}
     },
@@ -176,7 +289,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "title_label = tk.Label(frame, text=\"Weverse Video Downloader\", font=(\"Helvetica\", 16, \"bold\"), fg=\"#333\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10)\n# Label and entry for the URL\nurl_label = tk.Label(frame, text=\"Video URL:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=10, sticky=\"e\")\nurl_entry = tk.Entry(frame, width=40, font=(\"Helvetica\", 12), borderwidth=2, relief=\"solid\")\nurl_entry.grid(row=1, column=1, padx=10, pady=10)\n# Button to start download\ndownload_button = tk.Button(frame, text=\"Download Video\", command=start_download, font=(\"Helvetica\", 12), bg=\"#4CAF50\", fg=\"white\", relief=\"flat\", width=20)\ndownload_button.grid(row=2, column=0, columnspan=2, pady=20)",
+        "peekOfCode": "title_label = tk.Label(frame, text=\"Weverse VOD Downloader\", font=(\"Helvetica\", 18, \"bold\"), fg=\"#333\", bg=\"#f0f0f0\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10) # Reduz o pady para o título\nurl_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botões de Login/Cookies\nlogin_button = tk.Button(frame, text=\"1. Fazer Login Manual/Salvar Cookies\", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),\n                          font=(\"Helvetica\", 10, \"bold\"), bg=\"#FFC107\", fg=\"black\", relief=\"raised\", bd=2, width=35, cursor=\"hand2\")",
         "detail": "downloader",
         "documentation": {}
     },
@@ -185,7 +298,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "url_label = tk.Label(frame, text=\"Video URL:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=10, sticky=\"e\")\nurl_entry = tk.Entry(frame, width=40, font=(\"Helvetica\", 12), borderwidth=2, relief=\"solid\")\nurl_entry.grid(row=1, column=1, padx=10, pady=10)\n# Button to start download\ndownload_button = tk.Button(frame, text=\"Download Video\", command=start_download, font=(\"Helvetica\", 12), bg=\"#4CAF50\", fg=\"white\", relief=\"flat\", width=20)\ndownload_button.grid(row=2, column=0, columnspan=2, pady=20)\n# Add padding for the overall window\nroot.grid_rowconfigure(0, weight=1)\nroot.grid_rowconfigure(1, weight=1)",
+        "peekOfCode": "url_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botões de Login/Cookies\nlogin_button = tk.Button(frame, text=\"1. Fazer Login Manual/Salvar Cookies\", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),\n                          font=(\"Helvetica\", 10, \"bold\"), bg=\"#FFC107\", fg=\"black\", relief=\"raised\", bd=2, width=35, cursor=\"hand2\")\nlogin_button.grid(row=2, column=0, columnspan=2, pady=10) # Posição para o novo botão\n# Botão de Download Principal",
         "detail": "downloader",
         "documentation": {}
     },
@@ -194,7 +307,16 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "url_entry = tk.Entry(frame, width=40, font=(\"Helvetica\", 12), borderwidth=2, relief=\"solid\")\nurl_entry.grid(row=1, column=1, padx=10, pady=10)\n# Button to start download\ndownload_button = tk.Button(frame, text=\"Download Video\", command=start_download, font=(\"Helvetica\", 12), bg=\"#4CAF50\", fg=\"white\", relief=\"flat\", width=20)\ndownload_button.grid(row=2, column=0, columnspan=2, pady=20)\n# Add padding for the overall window\nroot.grid_rowconfigure(0, weight=1)\nroot.grid_rowconfigure(1, weight=1)\nroot.mainloop()",
+        "peekOfCode": "url_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botões de Login/Cookies\nlogin_button = tk.Button(frame, text=\"1. Fazer Login Manual/Salvar Cookies\", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),\n                          font=(\"Helvetica\", 10, \"bold\"), bg=\"#FFC107\", fg=\"black\", relief=\"raised\", bd=2, width=35, cursor=\"hand2\")\nlogin_button.grid(row=2, column=0, columnspan=2, pady=10) # Posição para o novo botão\n# Botão de Download Principal\ndownload_button = tk.Button(frame, text=\"2. Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "login_button",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "login_button = tk.Button(frame, text=\"1. Fazer Login Manual/Salvar Cookies\", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),\n                          font=(\"Helvetica\", 10, \"bold\"), bg=\"#FFC107\", fg=\"black\", relief=\"raised\", bd=2, width=35, cursor=\"hand2\")\nlogin_button.grid(row=2, column=0, columnspan=2, pady=10) # Posição para o novo botão\n# Botão de Download Principal\ndownload_button = tk.Button(frame, text=\"2. Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",\n                            relief=\"raised\", bd=3, width=25, cursor=\"hand2\")\ndownload_button.grid(row=3, column=0, columnspan=2, pady=15) # Ajusta a linha para o botão principal\nstatus_label = tk.Label(root, text=\"Pronto para baixar VODs! (Tente fazer login primeiro)\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)",
         "detail": "downloader",
         "documentation": {}
     },
@@ -203,7 +325,16 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "download_button = tk.Button(frame, text=\"Download Video\", command=start_download, font=(\"Helvetica\", 12), bg=\"#4CAF50\", fg=\"white\", relief=\"flat\", width=20)\ndownload_button.grid(row=2, column=0, columnspan=2, pady=20)\n# Add padding for the overall window\nroot.grid_rowconfigure(0, weight=1)\nroot.grid_rowconfigure(1, weight=1)\nroot.mainloop()",
+        "peekOfCode": "download_button = tk.Button(frame, text=\"2. Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",\n                            relief=\"raised\", bd=3, width=25, cursor=\"hand2\")\ndownload_button.grid(row=3, column=0, columnspan=2, pady=15) # Ajusta a linha para o botão principal\nstatus_label = tk.Label(root, text=\"Pronto para baixar VODs! (Tente fazer login primeiro)\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)\nroot.mainloop()",
+        "detail": "downloader",
+        "documentation": {}
+    },
+    {
+        "label": "status_label",
+        "kind": 5,
+        "importPath": "downloader",
+        "description": "downloader",
+        "peekOfCode": "status_label = tk.Label(root, text=\"Pronto para baixar VODs! (Tente fazer login primeiro)\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)\nroot.mainloop()",
         "detail": "downloader",
         "documentation": {}
     }
