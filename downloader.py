@@ -340,12 +340,44 @@ def main(video_page_url, output_file, status_callback):
         service = ChromeService(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        # --- NOVO: Sempre pede o cookie, não faz login manual ---
-        if not load_cookies(driver, status_callback):
-            status_callback("Arquivo de cookies não encontrado ou inválido. Por favor, gere e coloque o arquivo 'weverse_cookies.json' na pasta do script.")
-            messagebox.showerror("Cookies necessários", "Arquivo de cookies não encontrado ou inválido. Por favor, gere e coloque o arquivo 'weverse_cookies.json' na pasta do script.")
+        # NOVO: Solicita ao usuário o arquivo de cookies
+        from tkinter import filedialog
+        cookie_path = filedialog.askopenfilename(
+            title="Selecione o arquivo de cookies do Weverse",
+            filetypes=[("Arquivos JSON", "*.json"), ("Todos os arquivos", "*.*")]
+        )
+        if not cookie_path:
+            status_callback("Operação cancelada: Nenhum arquivo de cookies selecionado.")
+            messagebox.showerror("Cookies necessários", "Operação cancelada: Nenhum arquivo de cookies selecionado.")
             return
-        
+        # Carrega cookies do arquivo selecionado
+        def load_cookies_from_path(driver, status_callback, path):
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    cookies = json.load(f)
+                driver.get("https://weverse.io/home")
+                time.sleep(2)
+                for cookie in cookies:
+                    if 'expiry' in cookie and (isinstance(cookie['expiry'], float) or cookie['expiry'] is None):
+                        if cookie['expiry'] is None:
+                            del cookie['expiry']
+                        else:
+                            cookie['expiry'] = int(cookie['expiry'])
+                    try:
+                        driver.add_cookie(cookie)
+                    except Exception as e:
+                        print(f"Aviso: Não foi possível adicionar o cookie '{cookie.get('name', 'N/A')}': {e}")
+                        continue
+                driver.refresh()
+                status_callback("Cookies carregados e aplicados.")
+                return True
+            except Exception as e:
+                status_callback(f"Erro ao carregar cookies: {e}")
+                messagebox.showerror("Erro de Cookies", f"Erro ao carregar cookies: {e}")
+                return False
+        if not load_cookies_from_path(driver, status_callback, cookie_path):
+            return
+        # ...continua fluxo normal...
         status_callback("Navegador iniciado. Carregando página do VOD...")
         driver.get(video_page_url)
         print(f"Loading page: {video_page_url}")
@@ -467,31 +499,6 @@ def start_download_thread():
     update_status_label("Iniciando processo de download do VOD...")
     threading.Thread(target=main, args=(video_page_url, output_path, update_status_label), daemon=True).start()
 
-# --- Callbacks para botões de Cookies na GUI ---
-def on_manual_login_button():
-    """
-    Handles the 'Login Manual' button click.
-    Opens a browser for manual login and then saves cookies.
-    """
-    # Abre um driver temporário para o usuário fazer login manualmente
-    temp_driver = None
-    try:
-        chrome_options = Options()
-        # Não use headless aqui, o usuário precisa interagir
-        chrome_options.add_argument('--log-level=3')
-        service = ChromeService(ChromeDriverManager().install())
-        temp_driver = webdriver.Chrome(service=service, options=chrome_options)
-        
-        # Chama a função de login manual
-        perform_weverse_login_manual(temp_driver, update_status_label)
-        
-    except Exception as e:
-        messagebox.showerror("Erro de Login Manual", f"Não foi possível iniciar o processo de login manual: {e}")
-        update_status_label(f"Erro no login manual: {e}")
-    finally:
-        if temp_driver:
-            temp_driver.quit() # Garante que o navegador temporário seja fechado
-
 # --- Configuração da GUI ---
 root = tk.Tk()
 root.title("Weverse VOD Downloader")
@@ -513,18 +520,13 @@ url_entry.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
 
 frame.grid_columnconfigure(1, weight=1)
 
-# Botões de Login/Cookies
-login_button = tk.Button(frame, text="1. Fazer Login Manual/Salvar Cookies", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),
-                          font=("Helvetica", 10, "bold"), bg="#FFC107", fg="black", relief="raised", bd=2, width=35, cursor="hand2")
-login_button.grid(row=2, column=0, columnspan=2, pady=10) # Posição para o novo botão
-
 # Botão de Download Principal
-download_button = tk.Button(frame, text="2. Baixar VOD", command=start_download_thread,
+download_button = tk.Button(frame, text="Baixar VOD", command=start_download_thread,
                             font=("Helvetica", 14, "bold"), bg="#4CAF50", fg="white",
                             relief="raised", bd=3, width=25, cursor="hand2")
-download_button.grid(row=3, column=0, columnspan=2, pady=15) # Ajusta a linha para o botão principal
+download_button.grid(row=2, column=0, columnspan=2, pady=15)
 
-status_label = tk.Label(root, text="Pronto para baixar VODs! (Tente fazer login primeiro)", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=("Helvetica", 10), fg="#555")
+status_label = tk.Label(root, text="Pronto para baixar VODs! Selecione o cookie manualmente ao baixar.", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=("Helvetica", 10), fg="#555")
 status_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)
 
 root.mainloop()

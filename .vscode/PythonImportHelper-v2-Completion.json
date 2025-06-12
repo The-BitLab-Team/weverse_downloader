@@ -249,15 +249,6 @@
         "documentation": {}
     },
     {
-        "label": "on_manual_login_button",
-        "kind": 2,
-        "importPath": "downloader",
-        "description": "downloader",
-        "peekOfCode": "def on_manual_login_button():\n    \"\"\"\n    Handles the 'Login Manual' button click.\n    Opens a browser for manual login and then saves cookies.\n    \"\"\"\n    # Abre um driver temporário para o usuário fazer login manualmente\n    temp_driver = None\n    try:\n        chrome_options = Options()\n        # Não use headless aqui, o usuário precisa interagir",
-        "detail": "downloader",
-        "documentation": {}
-    },
-    {
         "label": "COOKIES_FILE",
         "kind": 5,
         "importPath": "downloader",
@@ -280,7 +271,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "frame = tk.Frame(root, bg=\"#f0f0f0\", padx=20, pady=20)\nframe.pack(pady=10, fill=tk.BOTH, expand=True) # Reduz o pady superior para mais espaço\ntitle_label = tk.Label(frame, text=\"Weverse VOD Downloader\", font=(\"Helvetica\", 18, \"bold\"), fg=\"#333\", bg=\"#f0f0f0\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10) # Reduz o pady para o título\nurl_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botões de Login/Cookies",
+        "peekOfCode": "frame = tk.Frame(root, bg=\"#f0f0f0\", padx=20, pady=20)\nframe.pack(pady=10, fill=tk.BOTH, expand=True) # Reduz o pady superior para mais espaço\ntitle_label = tk.Label(frame, text=\"Weverse VOD Downloader\", font=(\"Helvetica\", 18, \"bold\"), fg=\"#333\", bg=\"#f0f0f0\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10) # Reduz o pady para o título\nurl_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botão de Download Principal",
         "detail": "downloader",
         "documentation": {}
     },
@@ -289,7 +280,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "title_label = tk.Label(frame, text=\"Weverse VOD Downloader\", font=(\"Helvetica\", 18, \"bold\"), fg=\"#333\", bg=\"#f0f0f0\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10) # Reduz o pady para o título\nurl_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botões de Login/Cookies\nlogin_button = tk.Button(frame, text=\"1. Fazer Login Manual/Salvar Cookies\", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),\n                          font=(\"Helvetica\", 10, \"bold\"), bg=\"#FFC107\", fg=\"black\", relief=\"raised\", bd=2, width=35, cursor=\"hand2\")",
+        "peekOfCode": "title_label = tk.Label(frame, text=\"Weverse VOD Downloader\", font=(\"Helvetica\", 18, \"bold\"), fg=\"#333\", bg=\"#f0f0f0\")\ntitle_label.grid(row=0, column=0, columnspan=2, pady=10) # Reduz o pady para o título\nurl_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botão de Download Principal\ndownload_button = tk.Button(frame, text=\"Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",",
         "detail": "downloader",
         "documentation": {}
     },
@@ -298,7 +289,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "url_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botões de Login/Cookies\nlogin_button = tk.Button(frame, text=\"1. Fazer Login Manual/Salvar Cookies\", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),\n                          font=(\"Helvetica\", 10, \"bold\"), bg=\"#FFC107\", fg=\"black\", relief=\"raised\", bd=2, width=35, cursor=\"hand2\")\nlogin_button.grid(row=2, column=0, columnspan=2, pady=10) # Posição para o novo botão\n# Botão de Download Principal",
+        "peekOfCode": "url_label = tk.Label(frame, text=\"URL do VOD:\", font=(\"Helvetica\", 12), bg=\"#f0f0f0\")\nurl_label.grid(row=1, column=0, padx=10, pady=5, sticky=\"w\") # Reduz pady\nurl_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botão de Download Principal\ndownload_button = tk.Button(frame, text=\"Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",\n                            relief=\"raised\", bd=3, width=25, cursor=\"hand2\")\ndownload_button.grid(row=2, column=0, columnspan=2, pady=15)",
         "detail": "downloader",
         "documentation": {}
     },
@@ -307,16 +298,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "url_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botões de Login/Cookies\nlogin_button = tk.Button(frame, text=\"1. Fazer Login Manual/Salvar Cookies\", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),\n                          font=(\"Helvetica\", 10, \"bold\"), bg=\"#FFC107\", fg=\"black\", relief=\"raised\", bd=2, width=35, cursor=\"hand2\")\nlogin_button.grid(row=2, column=0, columnspan=2, pady=10) # Posição para o novo botão\n# Botão de Download Principal\ndownload_button = tk.Button(frame, text=\"2. Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",",
-        "detail": "downloader",
-        "documentation": {}
-    },
-    {
-        "label": "login_button",
-        "kind": 5,
-        "importPath": "downloader",
-        "description": "downloader",
-        "peekOfCode": "login_button = tk.Button(frame, text=\"1. Fazer Login Manual/Salvar Cookies\", command=lambda: threading.Thread(target=on_manual_login_button, daemon=True).start(),\n                          font=(\"Helvetica\", 10, \"bold\"), bg=\"#FFC107\", fg=\"black\", relief=\"raised\", bd=2, width=35, cursor=\"hand2\")\nlogin_button.grid(row=2, column=0, columnspan=2, pady=10) # Posição para o novo botão\n# Botão de Download Principal\ndownload_button = tk.Button(frame, text=\"2. Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",\n                            relief=\"raised\", bd=3, width=25, cursor=\"hand2\")\ndownload_button.grid(row=3, column=0, columnspan=2, pady=15) # Ajusta a linha para o botão principal\nstatus_label = tk.Label(root, text=\"Pronto para baixar VODs! (Tente fazer login primeiro)\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)",
+        "peekOfCode": "url_entry = tk.Entry(frame, width=45, font=(\"Helvetica\", 12), borderwidth=2, relief=\"groove\")\nurl_entry.grid(row=1, column=1, padx=10, pady=5, sticky=\"ew\")\nframe.grid_columnconfigure(1, weight=1)\n# Botão de Download Principal\ndownload_button = tk.Button(frame, text=\"Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",\n                            relief=\"raised\", bd=3, width=25, cursor=\"hand2\")\ndownload_button.grid(row=2, column=0, columnspan=2, pady=15)\nstatus_label = tk.Label(root, text=\"Pronto para baixar VODs! Selecione o cookie manualmente ao baixar.\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)",
         "detail": "downloader",
         "documentation": {}
     },
@@ -325,7 +307,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "download_button = tk.Button(frame, text=\"2. Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",\n                            relief=\"raised\", bd=3, width=25, cursor=\"hand2\")\ndownload_button.grid(row=3, column=0, columnspan=2, pady=15) # Ajusta a linha para o botão principal\nstatus_label = tk.Label(root, text=\"Pronto para baixar VODs! (Tente fazer login primeiro)\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)\nroot.mainloop()",
+        "peekOfCode": "download_button = tk.Button(frame, text=\"Baixar VOD\", command=start_download_thread,\n                            font=(\"Helvetica\", 14, \"bold\"), bg=\"#4CAF50\", fg=\"white\",\n                            relief=\"raised\", bd=3, width=25, cursor=\"hand2\")\ndownload_button.grid(row=2, column=0, columnspan=2, pady=15)\nstatus_label = tk.Label(root, text=\"Pronto para baixar VODs! Selecione o cookie manualmente ao baixar.\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)\nroot.mainloop()",
         "detail": "downloader",
         "documentation": {}
     },
@@ -334,7 +316,7 @@
         "kind": 5,
         "importPath": "downloader",
         "description": "downloader",
-        "peekOfCode": "status_label = tk.Label(root, text=\"Pronto para baixar VODs! (Tente fazer login primeiro)\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)\nroot.mainloop()",
+        "peekOfCode": "status_label = tk.Label(root, text=\"Pronto para baixar VODs! Selecione o cookie manualmente ao baixar.\", bd=1, relief=tk.SUNKEN, anchor=tk.W, font=(\"Helvetica\", 10), fg=\"#555\")\nstatus_label.pack(side=tk.BOTTOM, fill=tk.X, ipady=5)\nroot.mainloop()",
         "detail": "downloader",
         "documentation": {}
     }
